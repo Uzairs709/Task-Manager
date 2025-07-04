@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainCoordinator"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingTop="25dp"
+    >
 
     <!-- RecyclerView for Task List -->
     <androidx.recyclerview.widget.RecyclerView

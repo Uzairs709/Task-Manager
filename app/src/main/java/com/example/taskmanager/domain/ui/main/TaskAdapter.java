@@ -2,13 +2,16 @@ package com.example.taskmanager.domain.ui.main;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.taskmanager.R;
@@ -57,6 +60,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         private final TextView titleText, descriptionText, deadlineText, categoryText;
         private final CheckBox checkBox;
+        private final LinearLayout taskCardLL;
+
 
         public TaskViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -65,7 +70,9 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             deadlineText = itemView.findViewById(R.id.taskDeadline);
             categoryText = itemView.findViewById(R.id.taskCategory);
             checkBox = itemView.findViewById(R.id.taskCheckbox);
+            taskCardLL=itemView.findViewById(R.id.taskCardLL);
         }
+
 
         public void bind(TaskEntity task) {
             titleText.setText(task.getTitle());
@@ -81,13 +88,23 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
             if (task.isCompleted()) {
                 titleText.setPaintFlags(titleText.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                taskCardLL.setBackgroundColor(ContextCompat.getColor(context,R.color.gary_80));
+                deadlineText.setTextColor(ContextCompat.getColor(context,R.color.white));
+                categoryText.setBackgroundResource(R.drawable.catgory_chip_complete);
             } else {
                 titleText.setPaintFlags(titleText.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                taskCardLL.setBackgroundColor(ContextCompat.getColor(context,R.color.white));
+                deadlineText.setTextColor(ContextCompat.getColor(context,R.color.gray_88));
+                categoryText.setBackgroundResource(R.drawable.category_chip);
+
+
             }
 
             checkBox.setOnCheckedChangeListener((btn, isChecked) -> {
                 if (task.isCompleted() != isChecked) {
                     listener.onTaskChecked(task);
+
+
                 }
             });
 
