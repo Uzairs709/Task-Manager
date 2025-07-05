@@ -1,8 +1,11 @@
 package com.example.taskmanager.domain.ui.main;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -111,10 +114,31 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             // Other click handlers
             itemView.setOnClickListener(v -> listener.onTaskClick(task));
             itemView.setOnLongClickListener(v -> {
-
-                listener.onTaskDelete(task);
+                AlertDialog.Builder dialogueBuilder = getDialogueBuilder(task);
+                dialogueBuilder.show();
                 return true;
+
             });
+        }
+
+        private AlertDialog.Builder getDialogueBuilder(TaskEntity task) {
+            AlertDialog.Builder dialogueBuilder=new AlertDialog.Builder(context);
+
+            dialogueBuilder.setTitle("Confirm Delete");
+            dialogueBuilder.setMessage("Are you sure you want to delete?");
+
+            dialogueBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    listener.onTaskDelete(task);
+                }
+            });
+            dialogueBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                }
+            });
+            return dialogueBuilder;
         }
 
     }

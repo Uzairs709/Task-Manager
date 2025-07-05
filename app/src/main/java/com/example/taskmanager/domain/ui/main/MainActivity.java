@@ -8,10 +8,12 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -24,6 +26,7 @@ import com.example.taskmanager.data.local.model.TaskEntity;
 import com.example.taskmanager.domain.ui.addedit.AddEditTaskActivity;
 import com.example.taskmanager.domain.ui.utils.NotificationHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.search.SearchBar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private TaskAdapter taskAdapter;
     private MainViewModel viewModel;
     private FloatingActionButton fabAdd;
-
+    private SearchView searchBar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +49,16 @@ public class MainActivity extends AppCompatActivity {
         // Init Views
         recyclerView = findViewById(R.id.recyclerViewTasks);
         fabAdd = findViewById(R.id.fabAddTask);
+        searchBar=findViewById(R.id.searchBar);
+        searchBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                searchBar.setIconified(false);
+                searchBar.requestFocusFromTouch();
+
+            }
+        });
+
 
         // RecyclerView setup
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
