@@ -92,14 +92,34 @@ public class MainActivity extends AppCompatActivity {
                 ViewModelProvider.AndroidViewModelFactory.getInstance(getApplication())
         ).get(MainViewModel.class);
 
-        viewModel.getAllTasks().observe(this, taskAdapter::submitList);
+        viewModel.getAllTasks().observe(this, tasks -> {
+            viewModel.setAllTasks(tasks); // cache all tasks internally
+        });
 
+        viewModel.getFilteredTasks().observe(this, filteredTasks -> {
+            taskAdapter.submitList(filteredTasks);
+        });
         // FAB Add Button
         fabAdd.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, AddEditTaskActivity.class);
             startActivity(intent);
 
         });
+
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                viewModel.filterTasks(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                viewModel.filterTasks(newText);
+                return true;
+            }
+        });
+
         NotificationHelper.createNotificationChannel(this);
 
     }
