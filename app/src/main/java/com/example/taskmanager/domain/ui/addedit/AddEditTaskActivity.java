@@ -145,16 +145,23 @@ public class AddEditTaskActivity extends AppCompatActivity {
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 this,
-                task.getId(), // Unique per task
+                task.getId(),
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
+
+        long deadlineTime = task.getDeadline().getTime();
+        long oneHourBefore = deadlineTime - 60 * 60 * 1000; // 1 hour in milliseconds
+        long currentTime = System.currentTimeMillis();
+
+        // If 1 hour before is in the future, use that, otherwise use the exact deadline
+        long notificationTime = (oneHourBefore > currentTime) ? oneHourBefore : deadlineTime;
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         if (alarmManager != null) {
             alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
-                    task.getDeadline().getTime(),
+                    notificationTime,
                     pendingIntent
             );
         }

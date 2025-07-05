@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
     android:fillViewport="true"
-    >
+    android:background="#F5F5F5">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingTop="25dp"
-        >
+        android:spacing="12dp">
 
         <!-- Title -->
         <EditText
@@ -21,8 +22,11 @@
             android:layout_height="wrap_content"
             android:hint="Task Title"
             android:inputType="textCapSentences"
-            android:maxLines="1"
-            android:textSize="16sp" />
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:textSize="16sp"
+            android:elevation="2dp"
+            android:layout_marginBottom="12dp" />
 
         <!-- Description -->
         <EditText
@@ -33,7 +37,11 @@
             android:inputType="textMultiLine"
             android:minLines="3"
             android:maxLines="5"
-            android:layout_marginTop="12dp" />
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:textSize="16sp"
+            android:elevation="2dp"
+            android:layout_marginBottom="12dp" />
 
         <!-- Category -->
         <EditText
@@ -42,7 +50,11 @@
             android:layout_height="wrap_content"
             android:hint="Category (e.g. Work)"
             android:inputType="textCapWords"
-            android:layout_marginTop="12dp" />
+            android:background="@drawable/edittext_background"
+            android:padding="12dp"
+            android:textSize="16sp"
+            android:elevation="2dp"
+            android:layout_marginBottom="12dp" />
 
         <!-- Deadline -->
         <TextView
@@ -51,18 +63,18 @@
             android:layout_height="wrap_content"
             android:text="Pick Deadline"
             android:textSize="16sp"
-            android:textColor="@android:color/white"
-            android:background="@drawable/category_chip"
+            android:textColor="#444444"
+            android:background="@drawable/edittext_background"
             android:padding="12dp"
-            android:layout_marginTop="12dp" />
+            android:layout_marginBottom="12dp" />
 
-        <!-- Completion checkbox (visible in edit mode only) -->
+        <!-- Completion checkbox -->
         <CheckBox
             android:id="@+id/checkBoxCompleted"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Mark as Completed"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:visibility="gone" />
 
         <!-- Save Button -->
@@ -71,8 +83,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Save"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="24dp"
             android:backgroundTint="@color/purple_500"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:padding="14dp"
+            android:textSize="16sp"
+            android:background="@drawable/button_background" />
+
     </LinearLayout>
 </ScrollView>

@@ -33,7 +33,9 @@
                 android:id="@+id/taskCheckbox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:buttonTint="@color/purple_500" />
+                android:buttonTint="@color/purple_500"
+                android:hapticFeedbackEnabled="true"
+                />
 
             <TextView
                 android:id="@+id/taskTitle"

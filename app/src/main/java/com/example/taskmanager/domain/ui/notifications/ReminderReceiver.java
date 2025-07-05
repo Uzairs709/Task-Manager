@@ -18,6 +18,5 @@ public class ReminderReceiver extends BroadcastReceiver {
         String title = intent.getStringExtra("title");
         String description = intent.getStringExtra("description");
         NotificationHelper.showNotification(context, title, description);
-        Log.d("Notification Happened","hehe");
     }
 }
