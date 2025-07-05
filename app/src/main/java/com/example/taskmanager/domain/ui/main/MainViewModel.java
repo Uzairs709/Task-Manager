@@ -72,4 +72,9 @@ public class MainViewModel extends AndroidViewModel {
         task.setCompleted(!task.isCompleted());
         repository.update(task);
     }
+
+    public LiveData<List<String>> getAllUniqueCategories() {
+        return repository.getAllUniqueCategories();
+    }
+
 }

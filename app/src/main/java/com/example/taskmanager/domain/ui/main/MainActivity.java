@@ -9,6 +9,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -28,6 +31,9 @@ import com.example.taskmanager.domain.ui.utils.NotificationHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.search.SearchBar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
@@ -35,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private MainViewModel viewModel;
     private FloatingActionButton fabAdd;
     private SearchView searchBar;
+    private Spinner categorySpinner;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +57,9 @@ public class MainActivity extends AppCompatActivity {
         // Init Views
         recyclerView = findViewById(R.id.recyclerViewTasks);
         fabAdd = findViewById(R.id.fabAddTask);
-        searchBar=findViewById(R.id.searchBar);
+        searchBar = findViewById(R.id.searchBar);
+        categorySpinner = findViewById(R.id.spinnerCategoryFilter);
+
         searchBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,9 +130,42 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        viewModel.getAllUniqueCategories().observe(this, categories -> {
+            List<String> spinnerItems = new ArrayList<>();
+            spinnerItems.add("All Categories"); // Default
+            spinnerItems.addAll(categories);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                    this, android.R.layout.simple_spinner_item, spinnerItems
+            );
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            categorySpinner.setAdapter(adapter);
+        });
+
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedCategory = parent.getItemAtPosition(position).toString();
+
+                if (selectedCategory.equals("All Categories")) {
+                    viewModel.getAllTasks(); // Your existing method to fetch all
+                } else {
+                    viewModel.filterTasks(selectedCategory); // Your existing filter function
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+                viewModel.getAllTasks();
+            }
+        });
+
+
         NotificationHelper.createNotificationChannel(this);
 
     }
+
     private void requestExactAlarmPermissionIfNeeded() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);

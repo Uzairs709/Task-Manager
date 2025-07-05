@@ -50,6 +50,10 @@ public class TaskRepository {
         return null;
     }
 
+    public LiveData<List<String>> getAllUniqueCategories() {
+        return taskDao.getAllUniqueCategories();
+    }
+
     public LiveData<TaskEntity> getTaskById(int taskId) {
         return taskDao.getTaskById(taskId);
     }

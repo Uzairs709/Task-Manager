@@ -163,7 +163,7 @@ public class AddEditTaskActivity extends AppCompatActivity {
     private void saveTask() {
         String title = titleInput.getText().toString().trim();
         String description = descriptionInput.getText().toString().trim();
-        String category = categoryInput.getText().toString().trim();
+        String category = categoryInput.getText().toString().toLowerCase().trim();
 
 
         TaskEntity task=new TaskEntity(title,description,category,selectedDeadline,false);
