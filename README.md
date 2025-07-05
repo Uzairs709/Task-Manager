@@ -1,4 +1,4 @@
-# Smart Task Manager (Android - Java)
+# Task Manager (Android - Java)
 
 ## How to Run
 1. Clone the repo
