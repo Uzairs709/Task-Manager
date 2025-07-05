@@ -1,8 +1,15 @@
 package com.example.taskmanager.domain.ui.addedit;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -10,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.RequiresPermission;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -18,6 +26,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.taskmanager.R;
 import com.example.taskmanager.data.local.model.TaskEntity;
+import com.example.taskmanager.domain.ui.notifications.ReminderReceiver;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -80,9 +89,10 @@ public class AddEditTaskActivity extends AppCompatActivity {
         new DatePickerDialog(
                 this,
                 (view, year, month, dayOfMonth) -> {
-                    calendar.set(year, month, dayOfMonth);
-                    selectedDeadline = calendar.getTime();
-                    updateDeadlineUI();
+                    calendar.set(Calendar.YEAR, year);
+                    calendar.set(Calendar.MONTH, month);
+                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    showTimePicker(calendar);
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
@@ -90,8 +100,26 @@ public class AddEditTaskActivity extends AppCompatActivity {
         ).show();
     }
 
+    private void showTimePicker(Calendar calendar) {
+        new android.app.TimePickerDialog(
+                this,
+                (view, hourOfDay, minute) -> {
+                    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                    calendar.set(Calendar.MINUTE, minute);
+                    calendar.set(Calendar.SECOND, 0);
+                    calendar.set(Calendar.MILLISECOND, 0);
+
+                    selectedDeadline = calendar.getTime(); // ✅ Final Date
+                    updateDeadlineUI();
+                },
+                calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE),
+                true
+        ).show();
+    }
+
     private void updateDeadlineUI() {
-        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy hh:mm a", Locale.getDefault());
         deadlineText.setText("Due: " + sdf.format(selectedDeadline));
     }
 
@@ -108,11 +136,37 @@ public class AddEditTaskActivity extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("ScheduleExactAlarm")
+    @RequiresPermission(Manifest.permission.SCHEDULE_EXACT_ALARM)
+    private void scheduleNotification(TaskEntity task) {
+        Intent intent = new Intent(this, ReminderReceiver.class);
+        intent.putExtra("title", task.getTitle());
+        intent.putExtra("description", task.getDescription());
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                this,
+                task.getId(), // Unique per task
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
+        );
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    task.getDeadline().getTime(),
+                    pendingIntent
+            );
+        }
+    }
+    @SuppressLint("ScheduleExactAlarm")
     private void saveTask() {
         String title = titleInput.getText().toString().trim();
         String description = descriptionInput.getText().toString().trim();
         String category = categoryInput.getText().toString().trim();
 
+
+        TaskEntity task=new TaskEntity(title,description,category,selectedDeadline,false);
         if (title.isEmpty()) {
             titleInput.setError("Title is required");
             return;
@@ -123,14 +177,17 @@ public class AddEditTaskActivity extends AppCompatActivity {
         }
 
         if (isEditMode) {
-            TaskEntity updatedTask = new TaskEntity(title, description, category, selectedDeadline, completedCheck.isChecked());
-            updatedTask.setId(editingTaskId);
-            viewModel.updateTask(updatedTask);
+            task.setCompleted(completedCheck.isChecked());
+            task.setId(editingTaskId);
+            viewModel.updateTask(task);
         } else {
-            viewModel.insertTask(title, description, category, selectedDeadline, false);
+            viewModel.insertTask(task);
         }
-
+        scheduleNotification(task);
         Toast.makeText(this, "Task saved", Toast.LENGTH_SHORT).show();
         finish(); // Go back to main screen
     }
+
+
+
 }

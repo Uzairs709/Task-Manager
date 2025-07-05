@@ -1,6 +1,7 @@
 package com.example.taskmanager.domain.ui.addedit;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -21,8 +22,8 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     }
 
     // Save new task
-    public void insertTask(String title, String description, String category, Date deadline, boolean isCompleted) {
-        TaskEntity newTask = new TaskEntity(title, description, category, deadline, isCompleted);
+    public void insertTask(TaskEntity newTask) {
+        Log.d("Date time", newTask.getDeadline().toString());
         repository.insert(newTask);
     }
 
@@ -35,4 +36,6 @@ public class AddEditTaskViewModel extends AndroidViewModel {
     public LiveData<TaskEntity> getTaskById(int taskId) {
         return repository.getTaskById(taskId);
     }
+
+
 }

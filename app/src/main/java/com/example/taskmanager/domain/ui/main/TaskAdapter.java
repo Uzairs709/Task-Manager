@@ -111,6 +111,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
             // Other click handlers
             itemView.setOnClickListener(v -> listener.onTaskClick(task));
             itemView.setOnLongClickListener(v -> {
+
                 listener.onTaskDelete(task);
                 return true;
             });

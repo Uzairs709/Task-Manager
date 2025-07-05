@@ -1,7 +1,13 @@
 package com.example.taskmanager.domain.ui.main;
 
+import android.Manifest;
+import android.app.AlarmManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -16,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.taskmanager.R;
 import com.example.taskmanager.data.local.model.TaskEntity;
 import com.example.taskmanager.domain.ui.addedit.AddEditTaskActivity;
+import com.example.taskmanager.domain.ui.utils.NotificationHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,7 +37,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        requestExactAlarmPermissionIfNeeded();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+            }
+        }
         // Init Views
         recyclerView = findViewById(R.id.recyclerViewTasks);
         fabAdd = findViewById(R.id.fabAddTask);
@@ -75,5 +87,16 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
 
         });
+        NotificationHelper.createNotificationChannel(this);
+
+    }
+    private void requestExactAlarmPermissionIfNeeded() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            if (alarmManager != null && !alarmManager.canScheduleExactAlarms()) {
+                Intent intent = new Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+                startActivity(intent);
+            }
+        }
     }
 }
