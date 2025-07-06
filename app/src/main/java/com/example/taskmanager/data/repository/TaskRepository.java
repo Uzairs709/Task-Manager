@@ -39,16 +39,6 @@ public class TaskRepository {
         executor.execute(() -> taskDao.delete(task));
     }
 
-    public LiveData<List<TaskEntity>> getTasksByCategory(String category) {
-        //TODO: get task with respect to their Category
-        return null;
-    }
-
-    public LiveData<List<TaskEntity>> getTasksDueBefore(Date date) {
-        //TODO: get task with respect to their Due Date
-
-        return null;
-    }
 
     public LiveData<List<String>> getAllUniqueCategories() {
         return taskDao.getAllUniqueCategories();

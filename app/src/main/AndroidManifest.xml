@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,20 +14,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TaskManager">
-        <receiver android:name=".domain.ui.notifications.ReminderReceiver"
-            android:exported="false"/>
         <activity
-            android:name=".domain.ui.addedit.AddEditTaskActivity"
+            android:name=".domain.ui.register.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".domain.ui.main.MainActivity"
-            android:exported="true">
+            android:name=".domain.ui.login.SignInActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".domain.ui.notifications.ReminderReceiver"
+            android:exported="false" />
+
+        <activity
+            android:name=".domain.ui.addedit.AddEditTaskActivity"
+            android:exported="false" />
+        <activity
+            android:name=".domain.ui.main.MainActivity"
+            android:exported="false"/>
+
     </application>
 
 </manifest>
