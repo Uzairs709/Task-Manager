@@ -5,13 +5,17 @@
 2. Open in Android Studio
 3. Run on device/emulator (min SDK: 21)
 
+## Implemented Features
+● Add, update, and delete tasks.
+● Set deadlines and get notified when deadlines are near.
+● Mark tasks as completed.
+● Organize tasks by categories (e.g., Work, Personal, Learning).
+
 ## Assumptions
-- No user accounts for now (single user)
 - Reminders are handled via Android notifications
 - Firebase sync planned, not implemented yet
 
 ## Improvements
 - Add multi-device sync
-- User login (Firebase)
 - Dark mode support
 - Task attachments (e.g., image or audio)
